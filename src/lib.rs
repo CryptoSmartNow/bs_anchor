@@ -17,7 +17,6 @@ declare_id!("6bS35BvXGd6vu8PUaruDcoPPb37aK6QT1RH3mq1TZ8Fg");
 #[program]
 pub mod bs_anchor {
     use super::*;
-    use crate::event::*;
 
     pub fn initialize_factory(
         ctx: Context<InitializeFactory>,
@@ -25,7 +24,6 @@ pub mod bs_anchor {
         savings_creation_fee: u64,
         interest_rate_basis_points: u64,
     ) -> Result<()> {
-        require!(registration_fee > 0, ErrorCode::InvalidAmount);
         require!(savings_creation_fee > 0, ErrorCode::InvalidAmount);
 
         let factory = &mut ctx.accounts.factory;
@@ -69,14 +67,16 @@ pub mod bs_anchor {
 
         assert_supported_stablecoin(&ctx.accounts.factory, &ctx.accounts.stablecoin_mint.key())?;
 
-        split_fee(
-            ctx.accounts.factory.registration_fee,
-            &ctx.accounts.user.to_account_info(),
-            &ctx.accounts.user_stablecoin_ata,
-            &ctx.accounts.treasury_token_account,
-            &ctx.accounts.buyback_token_account,
-            &ctx.accounts.token_program,
-        )?;
+        if ctx.accounts.factory.registration_fee > 0 {
+            split_fee(
+                ctx.accounts.factory.registration_fee,
+                &ctx.accounts.user.to_account_info(),
+                &ctx.accounts.user_stablecoin_ata,
+                &ctx.accounts.treasury_token_account,
+                &ctx.accounts.buyback_token_account,
+                &ctx.accounts.token_program,
+            )?;
+        }
 
         profile.owner = ctx.accounts.user.key();
         profile.registered_at = ctx.accounts.clock.unix_timestamp;
@@ -178,7 +178,7 @@ pub mod bs_anchor {
 
     pub fn top_up_savings(
         ctx: Context<TopUpSavings>,
-        plan_index: u64,
+        _plan_index: u64,
         additional_amount: u64,
     ) -> Result<()> {
         require!(additional_amount > 0, ErrorCode::InvalidAmount);

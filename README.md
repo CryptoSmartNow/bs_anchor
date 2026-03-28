@@ -23,6 +23,10 @@ Unlike the EVM "Child Contract" model, this implementation utilizes **Program De
 ## 🧪 Development & Testing (Solana Playground)
 This project was developed and verified using **Solana Playground (SolPG)**. 
 
+### Fee configuration notes
+- `registration_fee` can now be zero so registration is free; when the value is positive we still call `split_fee`, which routes half of the amount into each configured treasury/buyback wallet.
+- The treasury and buyback wallets are stored in the factory PDA and the `register_user`/`create_savings_plan` accounts require the provided SPL accounts to be owned by those pubkeys, so the human operators simply supply their own token accounts and the on-chain helper keeps the buckets separate.
+
 ### To Verify:
 1. Open [Solana Playground](https://beta.solpg.io).
 2. Import the `src/lib.rs` and `idl.json`.
@@ -38,5 +42,3 @@ This project was developed and verified using **Solana Playground (SolPG)**.
 - `tests/bs_anchor.ts`: The comprehensive verification suite.
 - `client/client.ts`: An interactive developer dashboard for manual protocol testing.
 
----
-**Status**: 100% Verified on Devnet. Ready for Frontend Integration.
