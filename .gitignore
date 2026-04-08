@@ -1,7 +1,11 @@
-.anchor
+target/
+.anchor/
 .DS_Store
-target
+node_modules/
+.yarn/
+dist/
+coverage/
+test-ledger/
 **/*.rs.bk
-node_modules
-test-ledger
-.yarn
+Cargo.lock
+

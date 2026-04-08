@@ -1,5 +1,9 @@
 [workspace]
-members = ["programs/bs_anchor"]
+members = ["programs/*"]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
 
 [profile.release]
 overflow-checks = true
